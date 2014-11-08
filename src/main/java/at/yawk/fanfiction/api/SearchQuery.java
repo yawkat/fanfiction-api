@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -200,12 +201,7 @@ public class SearchQuery {
         builder.append("p=");
 
         final String s = builder.toString();
-        return new CompiledSearchQuery() {
-            @Override
-            public String finalize(int page) {
-                return s + (page + 1);
-            }
-        };
+        return new CompiledSearchQuery(s);
     }
 
     private static void appendItemList(StringBuilder builder, String tag, List<Integer> l) {
@@ -219,7 +215,12 @@ public class SearchQuery {
         return compile().finalize(page);
     }
 
-    public static interface CompiledSearchQuery {
-        String finalize(int page);
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class CompiledSearchQuery {
+        private final String query;
+
+        public String finalize(int page) {
+            return query + (page + 1);
+        }
     }
 }
