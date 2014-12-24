@@ -1,6 +1,7 @@
 package at.yawk.fanfiction.api.web;
 
 import at.yawk.fanfiction.api.Author;
+import at.yawk.fanfiction.api.Genre;
 import at.yawk.fanfiction.api.Rating;
 import at.yawk.fanfiction.api.Story;
 import com.google.common.base.Splitter;
@@ -94,6 +95,7 @@ class SearchHandler extends DefaultHandler {
             break;
         case 6:
             String tagString = endReadText();
+            int untitledTagIndex = 0;
             for (String tag : Splitter.on(" - ").split(tagString)) {
                 if (tag.startsWith("Rated: ")) {
                     builder.rating(Rating.forName(tag.substring(7)));
@@ -105,6 +107,21 @@ class SearchHandler extends DefaultHandler {
                     builder.favoriteCount(Integer.parseInt(tag.substring(6).replace(",", "")));
                 } else if (tag.startsWith("Follows: ")) {
                     builder.followCount(Integer.parseInt(tag.substring(9).replace(",", "")));
+                } else if (tag.startsWith("Reviews: ")) {
+                    builder.reviewCount(Integer.parseInt(tag.substring(9).replace(",", "")));
+                } else {
+                    if (untitledTagIndex == 0) {
+                        builder.language(tag);
+                    } else if (untitledTagIndex == 1) {
+                        List<Genre> genres = new ArrayList<Genre>();
+                        for (String genreName : Splitter.on('/').split(tag)) {
+                            genres.add(Genre.builder().name(genreName).build());
+                        }
+                        builder.genres(genres);
+                    } else {
+                        System.out.println("Unparsed tag " + tag);
+                    }
+                    untitledTagIndex++;
                 }
             }
             stories.add(builder.build());

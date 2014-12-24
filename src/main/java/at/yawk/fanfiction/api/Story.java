@@ -1,5 +1,6 @@
 package at.yawk.fanfiction.api;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -22,4 +23,7 @@ public class Story {
     private int wordCount;
     private int favoriteCount;
     private int followCount;
+    private int reviewCount;
+    private String language;
+    private List<Genre> genres;
 }
