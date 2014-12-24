@@ -1,7 +1,9 @@
 package at.yawk.fanfiction.api.web;
 
 import at.yawk.fanfiction.api.Author;
+import at.yawk.fanfiction.api.Rating;
 import at.yawk.fanfiction.api.Story;
+import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.List;
 import org.xml.sax.Attributes;
@@ -92,7 +94,19 @@ class SearchHandler extends DefaultHandler {
             break;
         case 6:
             String tagString = endReadText();
-            System.out.println("Tags: " + tagString);
+            for (String tag : Splitter.on(" - ").split(tagString)) {
+                if (tag.startsWith("Rated: ")) {
+                    builder.rating(Rating.forName(tag.substring(7)));
+                } else if (tag.startsWith("Chapters: ")) {
+                    builder.chapterCount(Integer.parseInt(tag.substring(10)));
+                } else if (tag.startsWith("Words: ")) {
+                    builder.wordCount(Integer.parseInt(tag.substring(7).replace(",", "")));
+                } else if (tag.startsWith("Favs: ")) {
+                    builder.favoriteCount(Integer.parseInt(tag.substring(6).replace(",", "")));
+                } else if (tag.startsWith("Follows: ")) {
+                    builder.followCount(Integer.parseInt(tag.substring(9).replace(",", "")));
+                }
+            }
             stories.add(builder.build());
             stage = 0;
             break;

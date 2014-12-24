@@ -17,4 +17,9 @@ public class Story {
     private String title;
     private Author author;
     private String description;
+    private Rating rating;
+    private int chapterCount;
+    private int wordCount;
+    private int favoriteCount;
+    private int followCount;
 }

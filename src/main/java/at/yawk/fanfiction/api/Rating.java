@@ -16,4 +16,11 @@ public enum Rating {
 
     private final String name;
     private final int id;
+
+    public static Rating forName(String name) {
+        for (Rating rating : values()) {
+            if (rating.getName().equals(name)) { return rating; }
+        }
+        return null;
+    }
 }
